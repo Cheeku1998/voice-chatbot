@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyCPcTD5xS6YXWAu4aLRcnJoZxyGezH32EE";
+const API_KEY = "AIzaSyBUbhEKM3y3Fb1IaAvHPfTU1R8pMvAxskQ";
 
 async function generateResponse(userMessage) {
 
