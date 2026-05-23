@@ -1,42 +1,83 @@
-async function sendMessage(){
+const API_KEY = "AIzaSyCjeT5u8YdGfK-0xvIQajVS1PShqAmvkhI";
 
-    const message =
-    document.getElementById("message").value;
+async function sendMessage() {
 
-    const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-            method:"POST",
+    const input =
+    document.getElementById("message");
 
-            headers:{
-                "Content-Type":"application/json",
+    const message = input.value;
 
-                "Authorization":
-                "Bearer AIzaSyAzM8ICIRWZ0VOduj-ppYqrPm1jMy6WdTQ"
-            },
-
-            body:JSON.stringify({
-                model:"gpt-4o-mini",
-
-                messages:[
-                    {
-                        role:"user",
-                        content:message
-                    }
-                ]
-            })
-        }
-    );
-
-    const data = await response.json();
-
-    const reply =
-    data.choices[0].message.content;
+    if(message === ""){
+        return;
+    }
 
     document.getElementById("reply")
-    .innerText = reply;
+    .innerHTML = "Thinking...";
 
-    speak(reply);
+    try {
+
+        const response = await fetch(
+
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                contents: [
+                    {
+                        parts: [
+                            {
+                                text: message
+                            }
+                        ]
+                    }
+                ]
+
+            })
+
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        if(data.candidates){
+
+            const reply =
+            data.candidates[0]
+            .content.parts[0].text;
+
+            document.getElementById("reply")
+            .innerHTML = reply;
+
+            speak(reply);
+
+        } else {
+
+            document.getElementById("reply")
+            .innerHTML =
+            "No response from AI";
+
+            console.log(data);
+
+        }
+
+    } catch(error){
+
+        console.log(error);
+
+        document.getElementById("reply")
+        .innerHTML =
+        "Error connecting to AI";
+
+    }
+
 }
 
 function speak(text){
@@ -47,6 +88,7 @@ function speak(text){
     speech.lang = "en-US";
 
     speechSynthesis.speak(speech);
+
 }
 
 function startVoice(){
@@ -63,5 +105,7 @@ function startVoice(){
 
         document.getElementById("message")
         .value = voiceText;
+
     };
+
 }
