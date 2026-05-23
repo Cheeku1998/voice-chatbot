@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyCjeT5u8YdGfK-0xvIQajVS1PShqAmvkhI";
+const API_KEY = "AIzaSyCPcTD5xS6YXWAu4aLRcnJoZxyGezH32EE";
 
 async function generateResponse(userMessage) {
     try {
@@ -24,6 +24,7 @@ async function generateResponse(userMessage) {
         );
 
         const data = await response.json();
+
         console.log(data);
 
         if (data.candidates && data.candidates.length > 0) {
@@ -31,8 +32,38 @@ async function generateResponse(userMessage) {
         } else {
             return "No response from AI";
         }
+
     } catch (error) {
         console.error(error);
         return "Error generating response";
     }
+}
+
+async function sendMessage() {
+    const inputField = document.getElementById("user-input");
+    const chatBox = document.getElementById("chat-box");
+
+    const userMessage = inputField.value.trim();
+
+    if (userMessage === "") return;
+
+    // User message
+    chatBox.innerHTML += `
+        <div class="user-message">
+            ${userMessage}
+        </div>
+    `;
+
+    inputField.value = "";
+
+    // AI response
+    const botReply = await generateResponse(userMessage);
+
+    chatBox.innerHTML += `
+        <div class="bot-message">
+            ${botReply}
+        </div>
+    `;
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
